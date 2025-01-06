@@ -1,18 +1,17 @@
-let p = document.querySelector('.search input');
-let btn = document.querySelector('button');
+let searchInput = document.querySelector('.search input');
+let button = document.querySelector('button');
 const weatherIcon = document.querySelector('.weather-icon');
 
 async function checkWeather(place) {
-  const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${place}&appid=9a090cd868cf4d2054f2b725b14b2cf2`);
+  const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${place}&appid=9a090cd868cf4d2054f2b725b14b2cf2`);
 
-  if (res.status == 404) {
+  if (response.status == 404) {
     document.querySelector('.error').style.display = 'block';
     document.querySelector('.weather').style.display = 'none';
   } else {
-    const data = await res.json();
-    console.log(data);
+    const data = await response.json();
 
-    let temp = document.querySelector('.temp').textContent = `${Math.floor(data.main.temp)}°C`;
+    let temperature = document.querySelector('.temp').textContent = `${Math.floor(data.main.temp)}°C`;
     let city = document.querySelector('.city').textContent = data.name;
     let humidity = document.querySelector('.humidity').textContent = `${data.main.humidity}%`;
     let wind = document.querySelector('.wind').textContent = `${data.wind.speed} km/h`;
@@ -35,10 +34,9 @@ async function checkWeather(place) {
   }
 }
 
-btn.addEventListener('click', () => {
-  console.log(p.value);
-  checkWeather(p.value);
-  p.value = '';
+button.addEventListener('click', () => {
+  checkWeather(searchInput.value);
+  searchInput.value = '';
 });
 
 
