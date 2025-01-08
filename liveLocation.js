@@ -1,20 +1,10 @@
 import { variable } from "./variables.js";
-const{city,temp,humidity,wind,display,weatherIcon,currentLocation,button,searchBox}=variable;
+const { city, temp, humidity, wind, display, weatherIcon, currentLocation, button, searchBox } = variable;
+
 display.style.display = 'none';
 
-// Function to get live location data based on latitude and longitude
-async function getLiveLocation(lat, long) {
-  const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=930971becfa941f882053344220412&q=${lat},${long}&aqi=yes`);
-  const data = await response.json();
-  return data;
-}
-
-// Function to get weather information based on city name
-async function getName(cityName) {
-  const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=930971becfa941f882053344220412&q=${cityName}&aqi=yes`);
-  const data = await response.json();
-
-  // Update the displayed information
+// Helper function to update the UI with weather data
+function updateWeatherUI(data) {
   city.textContent = `${data.location.name}, ${data.location.region}`;
   temp.textContent = `${Math.floor(data.current.feelslike_c)}°C`;
   humidity.textContent = `${data.current.humidity}%`;
@@ -27,31 +17,36 @@ async function getName(cityName) {
   display.style.display = 'block';
 }
 
-// Function to get weather data based on current geolocation
-async function getLocation(position) {
-  const { latitude, longitude } = position.coords;
-  const conseq = await getLiveLocation(latitude, longitude);
-
-  // Update the displayed information
-  city.textContent = `${conseq.location.name}, ${conseq.location.region}`;
-  temp.textContent = `${Math.floor(conseq.current.feelslike_c)}°C`;
-  humidity.textContent = `${conseq.current.humidity}%`;
-  wind.textContent = `${conseq.current.wind_mph} km/h`;
-
-  if (conseq.current.condition.text) {
-    weatherIcon.src = conseq.current.condition.icon;
-  }
-
-  display.style.display = 'block';
+// Function to fetch weather data based on a location (latitude and longitude or city name)
+async function fetchWeatherData(query) {
+  const url = `https://api.weatherapi.com/v1/current.json?key=930971becfa941f882053344220412&q=${query}&aqi=yes`;
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
 }
 
-// Event listener for getting the current location weather
-currentLocation.addEventListener('click', async () => {
-  navigator.geolocation.getCurrentPosition(getLocation);
+// Function to get live weather data based on latitude and longitude
+async function getLiveLocation(lat, long) {
+  const data = await fetchWeatherData(`${lat},${long}`);
+  updateWeatherUI(data);
+}
+
+// Function to get weather data based on city name
+async function getCityWeather(cityName) {
+  const data = await fetchWeatherData(cityName);
+  updateWeatherUI(data);
+}
+
+// Event listener for getting weather based on the current geolocation
+currentLocation.addEventListener('click', () => {
+  navigator.geolocation.getCurrentPosition(
+    (position) => getLiveLocation(position.coords.latitude, position.coords.longitude),
+    (error) => console.error('Geolocation error:', error)
+  );
 });
 
-// Event listener for getting weather information based on the city entered
+// Event listener for getting weather based on the city entered
 button.addEventListener('click', () => {
-  getName(searchBox.value);
-  searchBox.value = ''; // Clear the input field
+  getCityWeather(searchBox.value);
+  searchBox.value = ''; // Clear the input field after the search
 });
