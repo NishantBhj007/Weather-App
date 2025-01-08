@@ -1,9 +1,9 @@
 
 export let variable={
- p:document.querySelector('.search input'),
- btn:document.querySelector('button'),
+ searchBox:document.querySelector('.search input'),
+ button:document.querySelector('button'),
  weatherIcon:document.querySelector('.weather-icon'),
- CurrentLocation:document.getElementById('liveLocation'),
+ currentLocation:document.getElementById('liveLocation'),
  city:document.querySelector('.city'),
  temp:document.querySelector('.temp'),
  humidity:document.querySelector('.humidity'),
