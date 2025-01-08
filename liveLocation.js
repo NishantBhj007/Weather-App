@@ -1,6 +1,6 @@
 import { variable } from "./variables.js";
-
-variable.display.style.display = 'none';
+const{city,temp,humidity,wind,display,weatherIcon,currentLocation,button,searchBox}=variable;
+display.style.display = 'none';
 
 // Function to get live location data based on latitude and longitude
 async function getLiveLocation(lat, long) {
@@ -15,16 +15,16 @@ async function getName(cityName) {
   const data = await response.json();
 
   // Update the displayed information
-  variable.city.textContent = `${data.location.name}, ${data.location.region}`;
-  variable.temp.textContent = `${Math.floor(data.current.feelslike_c)}°C`;
-  variable.humidity.textContent = `${data.current.humidity}%`;
-  variable.wind.textContent = `${data.current.wind_mph} km/h`;
+  city.textContent = `${data.location.name}, ${data.location.region}`;
+  temp.textContent = `${Math.floor(data.current.feelslike_c)}°C`;
+  humidity.textContent = `${data.current.humidity}%`;
+  wind.textContent = `${data.current.wind_mph} km/h`;
 
   if (data.current.condition.text) {
-    variable.weatherIcon.src = data.current.condition.icon;
+    weatherIcon.src = data.current.condition.icon;
   }
 
-  variable.display.style.display = 'block';
+  display.style.display = 'block';
 }
 
 // Function to get weather data based on current geolocation
@@ -33,25 +33,25 @@ async function getLocation(position) {
   const conseq = await getLiveLocation(latitude, longitude);
 
   // Update the displayed information
-  variable.city.textContent = `${conseq.location.name}, ${conseq.location.region}`;
-  variable.temp.textContent = `${Math.floor(conseq.current.feelslike_c)}°C`;
-  variable.humidity.textContent = `${conseq.current.humidity}%`;
-  variable.wind.textContent = `${conseq.current.wind_mph} km/h`;
+  city.textContent = `${conseq.location.name}, ${conseq.location.region}`;
+  temp.textContent = `${Math.floor(conseq.current.feelslike_c)}°C`;
+  humidity.textContent = `${conseq.current.humidity}%`;
+  wind.textContent = `${conseq.current.wind_mph} km/h`;
 
   if (conseq.current.condition.text) {
-    variable.weatherIcon.src = conseq.current.condition.icon;
+    weatherIcon.src = conseq.current.condition.icon;
   }
 
-  variable.display.style.display = 'block';
+  display.style.display = 'block';
 }
 
 // Event listener for getting the current location weather
-variable.CurrentLocation.addEventListener('click', async () => {
+currentLocation.addEventListener('click', async () => {
   navigator.geolocation.getCurrentPosition(getLocation);
 });
 
 // Event listener for getting weather information based on the city entered
-variable.btn.addEventListener('click', () => {
-  getName(variable.p.value);
-  variable.p.value = ''; // Clear the input field
+button.addEventListener('click', () => {
+  getName(searchBox.value);
+  searchBox.value = ''; // Clear the input field
 });
