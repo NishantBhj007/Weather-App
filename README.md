@@ -1,2 +1,2 @@
 # Weather-App
-weather app showing current weather
+check weather of any city-https://nishantbhj007.github.io/Weather-App/
